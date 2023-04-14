@@ -1,21 +1,37 @@
 import React, { createContext, useReducer } from 'react';
 
+export interface IMinutesOption {
+	value: number;
+	label: string;
+	minutesValue: number;
+}
+
+export interface IOperatorOption {
+	name: string;
+	id: number;
+	price: number;
+}
+
 export const initialState = {
-	phone: null as number | null,
-	minutes: 0,
+	phone: '' as string | null,
+	minutesMarks: [] as unknown as IMinutesOption[],
 	sms: 0,
 	internet: 0,
-	operator: null as string | null,
-	router: {
-		rent: true,
-		redeem: false
-	},
+	operators: [{ name: 'Список операторов пуст', id: 0 }] as IOperatorOption[],
 	social: {
 		facebook: false,
 		vk: true,
 		classmates: false,
 		instagram: true,
 		tikTok: false
+	},
+	DTO: {
+		operator: 0,
+		minutes: 1,
+		router: {
+			rent: true,
+			buy: false
+		}
 	}
 };
 
@@ -28,13 +44,14 @@ export interface IStore {
 
 export const StoreContext = createContext<IStore | null>(null);
 
-interface IAction {
+export interface IAction {
 	type: ActionType;
 	data: Partial<StateType>;
 }
 
-const enum ActionType {
-	updateState
+export const enum ActionType {
+	updateState,
+	updateDTO
 }
 
 const reducer = (state: StateType, action: IAction) => {
@@ -44,6 +61,16 @@ const reducer = (state: StateType, action: IAction) => {
 		return {
 			...state,
 			...action.data
+		};
+	}
+
+	if (type === ActionType.updateDTO) {
+		return {
+			...state,
+			DTO: {
+				...state.DTO,
+				...action.data.DTO
+			}
 		};
 	}
 
